@@ -19,14 +19,64 @@ class App extends React.Component {
       playerOneSeconds: 0,
       playerTwoMinutes: 0,
       playerTwoSeconds: 0,
-      turn: 'One'
+      turn: '',
+      gameOn: false,
     };
     this.updateGameTimeMinutes = this.updateGameTimeMinutes.bind(this);
     this.updateGameTimeSeconds = this.updateGameTimeSeconds.bind(this);
     this.startTurn = this.startTurn.bind(this);
+    this.tick = this.tick.bind(this);
   }
+
   startTurn(player){
-    console.log(player);
+    if(!this.state.gameOn){
+      this.setState({
+        gameOn:true,
+      })
+      setInterval(this.tick,1000)
+    }
+    this.setState({
+      turn: player,
+    })
+  }
+  tick(){
+    console.log('Tick');
+    if (this.state.turn === 'Player 1'){
+        var newSeconds = this.state.playerOneSeconds;
+        var newMinutes = this.state.playerOneMinutes;
+        if (newSeconds <60 && newSeconds>0){
+          newSeconds--;
+          
+          }
+        else if (newSeconds===0){
+          newMinutes--;
+          newSeconds = 59;
+          }
+        
+        this.setState({
+          playerOneMinutes: newMinutes,
+          playerOneSeconds: newSeconds,
+
+        })
+    }
+    else if(this.state.turn === 'Player 2'){
+      var newSeconds = this.state.playerTwoSeconds;
+      var newMinutes = this.state.playerTwoMinutes;
+      if (newSeconds <60 && newSeconds>0){
+        newSeconds--;
+        
+        }
+      else if (newSeconds===0){
+        newMinutes--;
+        newSeconds = 59;
+        }
+      
+      this.setState({
+        playerTwoMinutes: newMinutes,
+        playerTwoSeconds: newSeconds,
+
+      })
+    }
   }
   updateGameTimeMinutes(e){
     this.setState({
@@ -87,13 +137,7 @@ class App extends React.Component {
 
 
 class Clock extends React.Component{
-  constructor(props){
-    super(props);
-    this.state = {
-      secondsRemaining: this.props.seconds,
-      minutesRemaining: this.props.minutes,
-    }
-  }
+  
   render(){
     return(
       <div className='Clock'>
@@ -102,7 +146,7 @@ class Clock extends React.Component{
       </Typography>
       <Box p={1}>
         <div>
-          Time Remaining: {this.state.minutesRemaining}:{this.state.secondsRemaining}
+          Time Remaining: {this.props.minutes}:{this.props.seconds}
         </div>
       </Box>
       <Box p={1}>
