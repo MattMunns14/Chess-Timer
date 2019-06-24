@@ -20,7 +20,11 @@ class App extends React.Component {
       playerTwoMinutes: 0,
       playerTwoSeconds: 0,
       turn: '',
+      disableOne: false,
+      disableTwo: false,
       gameOn: false,
+      buttonText: 'Start Game',
+      buttonType: 'default'
     };
     this.updateGameTimeMinutes = this.updateGameTimeMinutes.bind(this);
     this.updateGameTimeSeconds = this.updateGameTimeSeconds.bind(this);
@@ -32,11 +36,14 @@ class App extends React.Component {
     if(!this.state.gameOn){
       this.setState({
         gameOn:true,
+        buttonText: 'End Turn',
+        buttonType: 'primary'
       })
       setInterval(this.tick,1000)
     }
     this.setState({
       turn: player,
+
     })
   }
   tick(){
@@ -56,6 +63,8 @@ class App extends React.Component {
         this.setState({
           playerOneMinutes: newMinutes,
           playerOneSeconds: newSeconds,
+          disableTwo: true,
+
 
         })
     }
@@ -74,6 +83,7 @@ class App extends React.Component {
       this.setState({
         playerTwoMinutes: newMinutes,
         playerTwoSeconds: newSeconds,
+        disableOne: true,
 
       })
     }
@@ -117,14 +127,20 @@ class App extends React.Component {
             <Paper><Clock name={'Player 1'} 
                           minutes={this.state.playerOneMinutes}
                           seconds={this.state.playerOneSeconds}
-                          startTurn={this.startTurn}/>
+                          startTurn={this.startTurn}
+                          disabledToggle = {this.state.disableOne}
+                          buttonText = {this.state.buttonText}
+                          buttonType = {this.state.buttonType}/>
             </Paper>
           </Grid>
           <Grid item xs={6}>
             <Paper><Clock name={'Player 2'} 
                           minutes={this.state.playerTwoMinutes}
                           seconds={this.state.playerTwoSeconds}
-                          startTurn={this.startTurn}/>
+                          startTurn={this.startTurn}
+                          disabledToggle = {this.state.disableTwo}
+                          buttonText = {this.state.buttonText}
+                          buttonType = {this.state.buttonType}/>
             </Paper>
           </Grid>
         </Grid>
@@ -150,7 +166,14 @@ class Clock extends React.Component{
         </div>
       </Box>
       <Box p={1}>
-        <Button variant="contained" color="primary" className='Start' onClick={() => this.props.startTurn(this.props.name)}>Begin Turn</Button>
+        <Button variant="contained" 
+                color={this.props.buttonType} 
+                className='Start' 
+                onClick={() => this.props.startTurn(this.props.name)}
+                disabled = {this.props.disabledToggle}>
+                {this.props.buttonText}
+                
+                </Button>
       </Box>
     </div>
     )
@@ -169,7 +192,7 @@ function SetTime(props){
 
       <Box p={2}>
         <Input className='SetTimeInputMinutes' 
-               type='number' 
+               type='number'
                placeholder={props.minutes.toString()}
                onChange = {props.onChangeMinutes}/> Minutes
       </Box>
