@@ -25,16 +25,18 @@ class App extends React.Component {
       gameOn: false,
       endGame: false,
       buttonText: 'Start Game',
-      buttonType: 'default'
+      buttonType: 'default',
+      intervalId: NaN,
+      
     };
     this.updateGameTimeMinutes = this.updateGameTimeMinutes.bind(this);
     this.updateGameTimeSeconds = this.updateGameTimeSeconds.bind(this);
     this.startTurn = this.startTurn.bind(this);
     this.tick = this.tick.bind(this);
     this.reset = this.reset.bind(this);
-    this.handleTimer = this.handleTimer.bind(this);
   }
   reset(){
+    clearInterval(this.state.intervalId);
     this.setState({
       playerOneMinutes: 0,
       playerOneSeconds: 0,
@@ -46,16 +48,22 @@ class App extends React.Component {
       gameOn: false,
       endGame: false,
       buttonText: 'Start Game',
-      buttonType: 'default'
+      buttonType: 'default',
+      intervalId: NaN,
+      
+
     })
   }
   startTurn(player){
     if(!this.state.gameOn){
+      let myInterval = setInterval(this.tick,1000)
+      
       this.setState({
         gameOn:true,
         buttonText: 'End Turn',
         buttonType: 'primary',
-        turn: player
+        turn: player,
+        intervalId: myInterval
       })
       if(player === 'Player 1'){
         this.setState({
@@ -67,11 +75,7 @@ class App extends React.Component {
           disableOne: true,
         })
       }
-    // if(myTimer){
-    //   clearInterval(myTimer);
-    //   console.log('cleared')
-    // }
-    var myTimer = setInterval(this.tick,1000);
+      
       
     }
     else if(this.state.gameOn){
@@ -92,14 +96,7 @@ class App extends React.Component {
       }
 
   }
-  handleTimer(instr){
-    if(instr === 'Start'){
-      var timer = setInterval(this.tick,1000);
-    }
-    else if(instr === 'Stop'){
-      clearInterval(timer);
-    }
-  }
+
   tick(timer){
     if (this.state.gameOn){
       if (this.state.turn === 'Player 1'){
