@@ -23,6 +23,7 @@ class App extends React.Component {
       disableOne: false,
       disableTwo: false,
       gameOn: false,
+      endGame: false,
       buttonText: 'Start Game',
       buttonType: 'default'
     };
@@ -30,64 +31,134 @@ class App extends React.Component {
     this.updateGameTimeSeconds = this.updateGameTimeSeconds.bind(this);
     this.startTurn = this.startTurn.bind(this);
     this.tick = this.tick.bind(this);
+    this.reset = this.reset.bind(this);
+    this.handleTimer = this.handleTimer.bind(this);
   }
-
+  reset(){
+    this.setState({
+      playerOneMinutes: 0,
+      playerOneSeconds: 0,
+      playerTwoMinutes: 0,
+      playerTwoSeconds: 0,
+      turn: '',
+      disableOne: false,
+      disableTwo: false,
+      gameOn: false,
+      endGame: false,
+      buttonText: 'Start Game',
+      buttonType: 'default'
+    })
+  }
   startTurn(player){
     if(!this.state.gameOn){
       this.setState({
         gameOn:true,
         buttonText: 'End Turn',
-        buttonType: 'primary'
+        buttonType: 'primary',
+        turn: player
       })
-      setInterval(this.tick,1000)
+      if(player === 'Player 1'){
+        this.setState({
+          disableTwo:true,
+        })
+      }
+      else{
+        this.setState({
+          disableOne: true,
+        })
+      }
+    // if(myTimer){
+    //   clearInterval(myTimer);
+    //   console.log('cleared')
+    // }
+    var myTimer = setInterval(this.tick,1000);
+      
     }
-    this.setState({
-      turn: player,
+    else if(this.state.gameOn){
+      if(player === 'Player 1'){
+        this.setState({
+          disableOne: true,
+          disableTwo: false,
+          turn: 'Player 2',
+        })
+      } 
+      else{
+        this.setState({
+          disableOne: false,
+          disableTwo: true,
+          turn: 'Player 1',
+        })
+      }
+      }
 
-    })
   }
-  tick(){
-    console.log('Tick');
-    if (this.state.turn === 'Player 1'){
-        var newSeconds = this.state.playerOneSeconds;
-        var newMinutes = this.state.playerOneMinutes;
+  handleTimer(instr){
+    if(instr === 'Start'){
+      var timer = setInterval(this.tick,1000);
+    }
+    else if(instr === 'Stop'){
+      clearInterval(timer);
+    }
+  }
+  tick(timer){
+    if (this.state.gameOn){
+      if (this.state.turn === 'Player 1'){
+          var newSeconds = this.state.playerOneSeconds;
+          var newMinutes = this.state.playerOneMinutes;
+          
+  
+          if (newSeconds <60 && newSeconds>0){
+            newSeconds--;
+            
+            }
+          else if (newSeconds===0){
+            if(newMinutes === 0){
+              console.log('Game Over');
+              this.setState({
+                gameOn: false,
+                endGame: true,
+              })
+            }
+            else{
+              newMinutes--;
+              newSeconds = 59;
+            }
+          }
+          
+          this.setState({
+            playerOneMinutes: newMinutes,
+            playerOneSeconds: newSeconds,
+          })
+      }
+      else if(this.state.turn === 'Player 2'){
+        var newSeconds = this.state.playerTwoSeconds;
+        var newMinutes = this.state.playerTwoMinutes;
+
         if (newSeconds <60 && newSeconds>0){
           newSeconds--;
           
           }
         else if (newSeconds===0){
-          newMinutes--;
-          newSeconds = 59;
+          if(newMinutes === 0){
+            console.log('Game Over');
+            this.setState({
+              gameOn: false,
+              endGame: true,
+            })
           }
+          else{
+            newMinutes--;
+            newSeconds = 59;
+          }
+        }
         
         this.setState({
-          playerOneMinutes: newMinutes,
-          playerOneSeconds: newSeconds,
-          disableTwo: true,
-
-
+          playerTwoMinutes: newMinutes,
+          playerTwoSeconds: newSeconds,
         })
-    }
-    else if(this.state.turn === 'Player 2'){
-      var newSeconds = this.state.playerTwoSeconds;
-      var newMinutes = this.state.playerTwoMinutes;
-      if (newSeconds <60 && newSeconds>0){
-        newSeconds--;
-        
-        }
-      else if (newSeconds===0){
-        newMinutes--;
-        newSeconds = 59;
-        }
-      
-      this.setState({
-        playerTwoMinutes: newMinutes,
-        playerTwoSeconds: newSeconds,
-        disableOne: true,
+      } 
+  }}
 
-      })
-    }
-  }
   updateGameTimeMinutes(e){
     this.setState({
       playerOneMinutes: e.target.value,
@@ -109,7 +180,49 @@ class App extends React.Component {
     })
   }
   render(){
-    return (
+    if (!this.state.endGame){
+      return (
+        <div className="App">
+        <Container maxWidth='sm' >
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Paper>
+                <SetTime title={'Time Per Turn'} 
+                        minutes={this.state.playerOneMinutes} 
+                        seconds={this.state.playerOneSeconds}
+                        onChangeMinutes={this.updateGameTimeMinutes}
+                        onChangeSeconds={this.updateGameTimeSeconds}
+                        gameOn = {this.state.gameOn}
+                        />
+              </Paper>
+            </Grid>
+            <Grid item xs={6}>
+              <Paper><Clock name={'Player 1'} 
+                            minutes={this.state.playerOneMinutes}
+                            seconds={this.state.playerOneSeconds}
+                            startTurn={this.startTurn}
+                            disabledToggle = {this.state.disableOne}
+                            buttonText = {this.state.buttonText}
+                            buttonType = {this.state.buttonType}/>
+              </Paper>
+            </Grid>
+            <Grid item xs={6}>
+              <Paper><Clock name={'Player 2'} 
+                            minutes={this.state.playerTwoMinutes}
+                            seconds={this.state.playerTwoSeconds}
+                            startTurn={this.startTurn}
+                            disabledToggle = {this.state.disableTwo}
+                            buttonText = {this.state.buttonText}
+                            buttonType = {this.state.buttonType}/>
+              </Paper>
+            </Grid>
+          </Grid>
+        </Container>
+        </div>
+      );
+    }
+    else{
+    return(
       <div className="App">
       <Container maxWidth='sm' >
         <Grid container spacing={3}>
@@ -143,10 +256,22 @@ class App extends React.Component {
                           buttonType = {this.state.buttonType}/>
             </Paper>
           </Grid>
+          <Grid item xs={12}>
+            <Paper>
+              <Box p={1}>
+              {this.state.turn} loses.
+              </Box>
+              <Box p={1}>
+              <Button variant="contained" color="secondary" onClick={this.reset}>Reset</Button>
+              </Box>
+            </Paper>
+          </Grid>
         </Grid>
       </Container>
       </div>
     );
+    
+  }
   }
 
 }
@@ -194,14 +319,16 @@ function SetTime(props){
         <Input className='SetTimeInputMinutes' 
                type='number'
                placeholder={props.minutes.toString()}
-               onChange = {props.onChangeMinutes}/> Minutes
+               onChange = {props.onChangeMinutes}
+               disabled={props.gameOn}/> Minutes
       </Box>
 
       <Box p={2}>
         <Input className='SetTimeInputSeconds' 
                type='number' 
                placeholder={props.seconds.toString()}
-               onChange={props.onChangeSeconds}/> Seconds
+               onChange={props.onChangeSeconds}
+               disabled={props.gameOn}/> Seconds
       </Box>
 
     </Typography>
