@@ -35,6 +35,10 @@ class App extends React.Component {
     this.tick = this.tick.bind(this);
     this.reset = this.reset.bind(this);
   }
+  componentDidUpdate(){
+    console.log('Updated with:');
+    console.log(this.state);
+  }
   reset(){
     clearInterval(this.state.intervalId);
     this.setState({
@@ -56,6 +60,7 @@ class App extends React.Component {
   }
   startTurn(player){
     if(!this.state.gameOn){
+      console.log(this.state.playerOneMinutes)
       let myInterval = setInterval(this.tick,1000)
       
       this.setState({
@@ -137,11 +142,13 @@ class App extends React.Component {
           }
         else if (newSeconds===0){
           if(newMinutes === 0){
-            console.log('Game Over');
-            this.setState({
+            
+           this.setState({
               gameOn: false,
               endGame: true,
-            })
+            });
+            console.log('Game Over');
+            
           }
           else{
             newMinutes--;
@@ -158,9 +165,9 @@ class App extends React.Component {
 
   updateGameTimeMinutes(e){
     this.setState({
-      playerOneMinutes: e.target.value,
+      playerOneMinutes: parseInt(e.target.value),
       playerOneSeconds: this.state.playerOneSeconds,
-      playerTwoMinutes: e.target.value,
+      playerTwoMinutes: parseInt(e.target.value),
       playerTwoSeconds: this.state.playerTwoSeconds,
       turn: this.state.turn,
 
@@ -169,9 +176,9 @@ class App extends React.Component {
   updateGameTimeSeconds(e){
     this.setState({
       playerOneMinutes: this.state.playerOneMinutes,
-      playerOneSeconds: e.target.value,
+      playerOneSeconds: parseInt(e.target.value),
       playerTwoMinutes: this.state.playerTwoMinutes,
-      playerTwoSeconds: e.target.value,
+      playerTwoSeconds: parseInt(e.target.value),
       turn: this.state.turn,
 
     })
