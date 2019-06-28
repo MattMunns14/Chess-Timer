@@ -109,7 +109,7 @@ class App extends React.Component {
           var newMinutes = this.state.playerOneMinutes;
           
   
-          if (newSeconds <60 && newSeconds>0){
+          if (newSeconds>0){
             newSeconds--;
             
             }
@@ -136,7 +136,7 @@ class App extends React.Component {
         var newSeconds = this.state.playerTwoSeconds;
         var newMinutes = this.state.playerTwoMinutes;
 
-        if (newSeconds <60 && newSeconds>0){
+        if (newSeconds>0){
           newSeconds--;
           
           }
@@ -164,10 +164,12 @@ class App extends React.Component {
   }}
 
   updateGameTimeMinutes(e){
+    var newMinutes = parseInt(e.target.value);
+
     this.setState({
-      playerOneMinutes: parseInt(e.target.value),
+      playerOneMinutes: newMinutes,
       playerOneSeconds: this.state.playerOneSeconds,
-      playerTwoMinutes: parseInt(e.target.value),
+      playerTwoMinutes: newMinutes,
       playerTwoSeconds: this.state.playerTwoSeconds,
       turn: this.state.turn,
 
@@ -324,7 +326,8 @@ function SetTime(props){
                type='number'
                placeholder={props.minutes.toString()}
                onChange = {props.onChangeMinutes}
-               disabled={props.gameOn}/> Minutes
+               disabled={props.gameOn}
+               inputProps={{ min: "0", step: "1" }}/> Minutes
       </Box>
 
       <Box p={2}>
@@ -332,7 +335,8 @@ function SetTime(props){
                type='number' 
                placeholder={props.seconds.toString()}
                onChange={props.onChangeSeconds}
-               disabled={props.gameOn}/> Seconds
+               disabled={props.gameOn}
+               inputProps={{ min: "0", max: "59", step: "1" }}/> Seconds
       </Box>
 
     </Typography>
