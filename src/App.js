@@ -35,10 +35,10 @@ class App extends React.Component {
     this.tick = this.tick.bind(this);
     this.reset = this.reset.bind(this);
   }
-  componentDidUpdate(){
-    console.log('Updated with:');
-    console.log(this.state);
-  }
+  // componentDidUpdate(){
+  //   // console.log('Updated with:');
+  //   // console.log(this.state);
+  // }
   reset(){
     clearInterval(this.state.intervalId);
     this.setState({
@@ -60,7 +60,6 @@ class App extends React.Component {
   }
   startTurn(player){
     if(!this.state.gameOn){
-      console.log(this.state.playerOneMinutes)
       let myInterval = setInterval(this.tick,1000)
       
       this.setState({
@@ -72,12 +71,15 @@ class App extends React.Component {
       })
       if(player === 'Player 1'){
         this.setState({
-          disableTwo:true,
+          disableOne:true,
+          turn: 'Player 2'
         })
+      
       }
       else{
         this.setState({
-          disableOne: true,
+          disableTwo: true,
+          turn: 'Player 1',
         })
       }
       
@@ -119,6 +121,8 @@ class App extends React.Component {
               this.setState({
                 gameOn: false,
                 endGame: true,
+                disableOne: true, 
+                disableTwo: true,
               })
             }
             else{
@@ -146,6 +150,8 @@ class App extends React.Component {
            this.setState({
               gameOn: false,
               endGame: true,
+              disableOne: true, 
+              disableTwo: true,
             });
             console.log('Game Over');
             
@@ -265,7 +271,7 @@ class App extends React.Component {
           <Grid item xs={12}>
             <Paper>
               <Box p={1}>
-              {this.state.turn} loses.
+              {this.state.turn} is out of time.
               </Box>
               <Box p={1}>
               <Button variant="contained" color="secondary" onClick={this.reset}>Reset</Button>
@@ -293,7 +299,7 @@ class Clock extends React.Component{
       </Typography>
       <Box p={1}>
         <div>
-          Time Remaining: {this.props.minutes}:{this.props.seconds}
+          Time Remaining: {this.props.minutes}:{("0" + this.props.seconds).slice (-2) }
         </div>
       </Box>
       <Box p={1}>
