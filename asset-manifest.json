@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/Chess-Timer/static/css/main.258e6bfa.chunk.css",
+    "main.js": "/Chess-Timer/static/js/main.4bfbc69e.chunk.js",
+    "main.js.map": "/Chess-Timer/static/js/main.4bfbc69e.chunk.js.map",
+    "runtime~main.js": "/Chess-Timer/static/js/runtime~main.8cbd055d.js",
+    "runtime~main.js.map": "/Chess-Timer/static/js/runtime~main.8cbd055d.js.map",
+    "static/js/2.9832c09e.chunk.js": "/Chess-Timer/static/js/2.9832c09e.chunk.js",
+    "static/js/2.9832c09e.chunk.js.map": "/Chess-Timer/static/js/2.9832c09e.chunk.js.map",
+    "index.html": "/Chess-Timer/index.html",
+    "precache-manifest.bc8b6bbc693d18841ad056da7b9dce11.js": "/Chess-Timer/precache-manifest.bc8b6bbc693d18841ad056da7b9dce11.js",
+    "service-worker.js": "/Chess-Timer/service-worker.js",
+    "static/css/main.258e6bfa.chunk.css.map": "/Chess-Timer/static/css/main.258e6bfa.chunk.css.map"
+  }
+}
