@@ -1,354 +1,165 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid'; 
-import Container from '@material-ui/core/Container'   
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import Input from '@material-ui/core/Input';
-import Box from '@material-ui/core/Box';
-
-
-
 import './App.css';
+import "react-tabs/style/react-tabs.css";
+import Paper from '@material-ui/core/Paper';
+import AppBar from '@material-ui/core/AppBar';
 
-class App extends React.Component {
-  constructor(props){
-    super(props);
-    this.state = {
-      playerOneMinutes: 0,
-      playerOneSeconds: 0,
-      playerTwoMinutes: 0,
-      playerTwoSeconds: 0,
-      turn: '',
-      disableOne: false,
-      disableTwo: false,
-      gameOn: false,
-      endGame: false,
-      buttonText: 'Start Game',
-      buttonType: 'default',
-      intervalId: NaN,
-      
-    };
-    this.updateGameTimeMinutes = this.updateGameTimeMinutes.bind(this);
-    this.updateGameTimeSeconds = this.updateGameTimeSeconds.bind(this);
-    this.startTurn = this.startTurn.bind(this);
-    this.tick = this.tick.bind(this);
-    this.reset = this.reset.bind(this);
-  }
-  // componentDidUpdate(){
-  //   // console.log('Updated with:');
-  //   // console.log(this.state);
-  // }
-  reset(){
-    clearInterval(this.state.intervalId);
-    this.setState({
-      playerOneMinutes: 0,
-      playerOneSeconds: 0,
-      playerTwoMinutes: 0,
-      playerTwoSeconds: 0,
-      turn: '',
-      disableOne: false,
-      disableTwo: false,
-      gameOn: false,
-      endGame: false,
-      buttonText: 'Start Game',
-      buttonType: 'default',
-      intervalId: NaN,
-      
+import att from './att.png';
+import micron from './micron.png';
+import homeDepot from './homeDepot.png';
+import Experience from './Components/Experience';
+import Project from './Components/Project';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Grid from '@material-ui/core/Grid';
 
-    })
-  }
-  startTurn(player){
-    if(!this.state.gameOn){
-      let myInterval = setInterval(this.tick,1000)
-      
-      this.setState({
-        gameOn:true,
-        buttonText: 'End Turn',
-        buttonType: 'primary',
-        turn: player,
-        intervalId: myInterval
-      })
-      if(player === 'Player 1'){
-        this.setState({
-          disableOne:true,
-          turn: 'Player 2'
-        })
-      
-      }
-      else{
-        this.setState({
-          disableTwo: true,
-          turn: 'Player 1',
-        })
-      }
-      
-      
+import Typography from '@material-ui/core/Typography';
+import PropTypes from 'prop-types';
+
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{ padding: 8 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
+function App(){
+  const [value, setValue] = React.useState(0);
+  function handleChange(event, newValue) {
+      setValue(newValue);
     }
-    else if(this.state.gameOn){
-      if(player === 'Player 1'){
-        this.setState({
-          disableOne: true,
-          disableTwo: false,
-          turn: 'Player 2',
-        })
-      } 
-      else{
-        this.setState({
-          disableOne: false,
-          disableTwo: true,
-          turn: 'Player 1',
-        })
-      }
-      }
+    return (
 
-  }
-
-  tick(timer){
-    if (this.state.gameOn){
-      if (this.state.turn === 'Player 1'){
-          var newSeconds = this.state.playerOneSeconds;
-          var newMinutes = this.state.playerOneMinutes;
-          
-  
-          if (newSeconds>0){
-            newSeconds--;
-            
-            }
-          else if (newSeconds===0){
-            if(newMinutes === 0){
-              console.log('Game Over');
-              this.setState({
-                gameOn: false,
-                endGame: true,
-                disableOne: true, 
-                disableTwo: true,
-              })
-            }
-            else{
-              newMinutes--;
-              newSeconds = 59;
-            }
-          }
-          
-          this.setState({
-            playerOneMinutes: newMinutes,
-            playerOneSeconds: newSeconds,
-          })
-      }
-      else if(this.state.turn === 'Player 2'){
-        var newSeconds = this.state.playerTwoSeconds;
-        var newMinutes = this.state.playerTwoMinutes;
-
-        if (newSeconds>0){
-          newSeconds--;
-          
-          }
-        else if (newSeconds===0){
-          if(newMinutes === 0){
-            
-           this.setState({
-              gameOn: false,
-              endGame: true,
-              disableOne: true, 
-              disableTwo: true,
-            });
-            console.log('Game Over');
-            
-          }
-          else{
-            newMinutes--;
-            newSeconds = 59;
-          }
-        }
-        
-        this.setState({
-          playerTwoMinutes: newMinutes,
-          playerTwoSeconds: newSeconds,
-        })
-      } 
-  }}
-
-  updateGameTimeMinutes(e){
-    var newMinutes = parseInt(e.target.value);
-
-    this.setState({
-      playerOneMinutes: newMinutes,
-      playerOneSeconds: this.state.playerOneSeconds,
-      playerTwoMinutes: newMinutes,
-      playerTwoSeconds: this.state.playerTwoSeconds,
-      turn: this.state.turn,
-
-    })
-  };
-  updateGameTimeSeconds(e){
-    this.setState({
-      playerOneMinutes: this.state.playerOneMinutes,
-      playerOneSeconds: parseInt(e.target.value),
-      playerTwoMinutes: this.state.playerTwoMinutes,
-      playerTwoSeconds: parseInt(e.target.value),
-      turn: this.state.turn,
-
-    })
-  }
-  render(){
-    if (!this.state.endGame){
-      return (
-        <div className="App">
-        <Container maxWidth='sm' >
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Paper>
-                <SetTime title={'Time Per Turn'} 
-                        minutes={this.state.playerOneMinutes} 
-                        seconds={this.state.playerOneSeconds}
-                        onChangeMinutes={this.updateGameTimeMinutes}
-                        onChangeSeconds={this.updateGameTimeSeconds}
-                        gameOn = {this.state.gameOn}
-                        />
-              </Paper>
-            </Grid>
-            <Grid item xs={6}>
-              <Paper><Clock name={'Player 1'} 
-                            minutes={this.state.playerOneMinutes}
-                            seconds={this.state.playerOneSeconds}
-                            startTurn={this.startTurn}
-                            disabledToggle = {this.state.disableOne}
-                            buttonText = {this.state.buttonText}
-                            buttonType = {this.state.buttonType}/>
-              </Paper>
-            </Grid>
-            <Grid item xs={6}>
-              <Paper><Clock name={'Player 2'} 
-                            minutes={this.state.playerTwoMinutes}
-                            seconds={this.state.playerTwoSeconds}
-                            startTurn={this.startTurn}
-                            disabledToggle = {this.state.disableTwo}
-                            buttonText = {this.state.buttonText}
-                            buttonType = {this.state.buttonType}/>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Container>
-        </div>
-      );
-    }
-    else{
-    return(
       <div className="App">
-      <Container maxWidth='sm' >
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
-            <Paper>
-              <SetTime title={'Time Per Turn'} 
-                       minutes={this.state.playerOneMinutes} 
-                       seconds={this.state.playerOneSeconds}
-                       onChangeMinutes={this.updateGameTimeMinutes}
-                       onChangeSeconds={this.updateGameTimeSeconds}
-                       />
+        <Paper className = "mainHeader">
+          <div className = "anotherHeader">
+              <h1>Matt Munns</h1>
+          </div>
+        </Paper>
+          <br/>
+        <Paper className = "content">
+
+            <Tabs value={value} 
+                  onChange={handleChange}         
+                  indicatorColor="#4E8098"
+                  textColor="inherit"
+                  centered>
+                  <Tab label="About"/>
+                  <Tab label="Experience"/>
+                  <Tab label="Projects"/>
+            </Tabs>
+
+          {value === 0 && <TabContainer>About</TabContainer>}
+          {value === 1 && <TabContainer>
+            <Grid container spacing={3}>
+                <div className = "Experience">
+                <Grid item xs>
+                  <Experience
+                    name = {'The Home Depot'}
+                    title = {'Pricing Analytics Intern'}
+                    image = {homeDepot}
+                    date = {'May 2019 - August 2019'}
+                    description = {[
+                                    <ul>
+                                      <li>Evaluating the effectiveness of pricing and assortment programs and identifying
+
+                                      </li>
+                                      <li> 
+                                        Using various machine learning and statistical methodologies
+                                        to complete analysis.
+                                      </li>
+                                      <li> 
+                                        Creating visualizations in Tableau and analyzing data in Python using packages
+                                        scikit-learn, scipy, and Pandas.
+                                      </li>
+                                    </ul>
+                    ]}
+
+                  />
+                </Grid>
+                  <br/>
+                <Grid item xs>
+                  <Experience
+                  name={'The Home Depot'}
+                  title = {'Senior Design Consultant'}
+                  image = {homeDepot}
+                  date = {'August 2018 - December 2018'}
+                  description = {[<ul>
+                                    <li>Worked in a team of eight to develop an assortment
+                                      planning strategy that incorporates big data.
+                                    </li>
+                                    <li>
+                                      Leveraged demographic and product data and used the 
+                                      K-prototypes algorithm to create a more robust store clustering
+                                      methodology. 
+                                    </li>
+                                    <li>
+                                      Identified a 3% sales lift opportunity through analysis of demographics, 
+                                      ,store traits and historical sales data.
+                                    </li>
+                                    <li>
+                                      Delivered proof of concept in Python that will serve as the foundation
+                                      for the implementation of the methodology.
+                                    </li>
+                          
+                                  </ul>]}
+
+                  />
+                  </Grid>
+                  <br/>
+                  <Experience
+                    name={'Micron Technology'}
+                    title={'Industrial Engineering Intern'}
+                    image={micron}
+                    date={'May 2018 - August 2018'}
+                    description={[<ul>
+                                    <li>Created a website for internal use to automatically generate PowerPoint presentations from company database info. 
+                                      The presentations featured charts created from company data to aid in reporting and decision making.</li>
+                                    <li>Communicated with stakeholders and executives to determine website functionality and presentation content. </li>
+                                    <li>Learned relevant web technologies over the summer to build and launch the website, including Flask, Docker, and OpenShift. </li>
+                                    <li>Used SQL to extract raw data and Python packages Pandas and Matplotlib to create reports from the data. </li>
+                                    <li>Completed a code review process and authored hand-off documentation to ensure the website's upkeep and use in my absence.</li>
+                                  </ul>
+
+                    ]}
+
+                  />
+                  <br/>
+                  <Experience 
+                    name={'AT&T'}
+                    title={'Engineering Intern'}
+                    image={att}
+                    date={"May 2017 - August 2017"}
+                    description={[<ul>
+                                    <li>Developed and documented the procedure for 
+                                      operational handover of completed projects and transitioned the operational 
+                                      handover presentation to an updated template.</li>
+                                    <li> Monitored the status of the department’s special projects 
+                                      and reported weekly to my supervisor, summarizing information such 
+                                      as ETAs, roadblocks, and deadlines and trained a team member to 
+                                      continue this role in my absence.</li>
+                                      <li>Contributed to a project which reported on the activity of virtual machines using Python and SQL.</li>
+                                  </ul>
+                                      ]}
+                    />
+                </div>
+              </Grid>
+            </TabContainer>}
+
+            {value === 2 && <TabContainer>
+              <Project
+                link = {"mmunns14.github.io/Chess-Timer"}
+                title = {'Chess Timer'}
+                description = {'App built in React that can be used to time a chess game. '}
+              />
+              </TabContainer>}
             </Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper><Clock name={'Player 1'} 
-                          minutes={this.state.playerOneMinutes}
-                          seconds={this.state.playerOneSeconds}
-                          startTurn={this.startTurn}
-                          disabledToggle = {this.state.disableOne}
-                          buttonText = {this.state.buttonText}
-                          buttonType = {this.state.buttonType}/>
-            </Paper>
-          </Grid>
-          <Grid item xs={6}>
-            <Paper><Clock name={'Player 2'} 
-                          minutes={this.state.playerTwoMinutes}
-                          seconds={this.state.playerTwoSeconds}
-                          startTurn={this.startTurn}
-                          disabledToggle = {this.state.disableTwo}
-                          buttonText = {this.state.buttonText}
-                          buttonType = {this.state.buttonType}/>
-            </Paper>
-          </Grid>
-          <Grid item xs={12}>
-            <Paper>
-              <Box p={1}>
-              {this.state.turn} is out of time.
-              </Box>
-              <Box p={1}>
-              <Button variant="contained" color="secondary" onClick={this.reset}>Reset</Button>
-              </Box>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Container>
+
       </div>
     );
-    
-  }
   }
 
-}
 
 
-class Clock extends React.Component{
-  
-  render(){
-    return(
-      <div className='Clock'>
-      <Typography variant="h6">
-        {this.props.name}
-      </Typography>
-      <Box p={1}>
-        <div>
-          Time Remaining: {this.props.minutes}:{("0" + this.props.seconds).slice (-2) }
-        </div>
-      </Box>
-      <Box p={1}>
-        <Button variant="contained" 
-                color={this.props.buttonType} 
-                className='Start' 
-                onClick={() => this.props.startTurn(this.props.name)}
-                disabled = {this.props.disabledToggle}>
-                {this.props.buttonText}
-                
-                </Button>
-      </Box>
-    </div>
-    )
-  }
-}
-
-
-function SetTime(props){
- return(
-  <div className='SetTime'>
-    <Typography variant="h4" component="h2">
-      {props.title}
-    </Typography>
-
-    <Typography variant="h5" component="h2">
-
-      <Box p={2}>
-        <Input className='SetTimeInputMinutes' 
-               type='number'
-               placeholder={props.minutes.toString()}
-               onChange = {props.onChangeMinutes}
-               disabled={props.gameOn}
-               inputProps={{ min: "0", step: "1" }}/> Minutes
-      </Box>
-
-      <Box p={2}>
-        <Input className='SetTimeInputSeconds' 
-               type='number' 
-               placeholder={props.seconds.toString()}
-               onChange={props.onChangeSeconds}
-               disabled={props.gameOn}
-               inputProps={{ min: "0", max: "59", step: "1" }}/> Seconds
-      </Box>
-
-    </Typography>
-
-  </div>
- );
-}
 
 export default App;
