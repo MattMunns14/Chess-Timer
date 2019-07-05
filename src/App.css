@@ -1,0 +1,22 @@
+.App {
+  text-align: center;
+  margin: auto; 
+  padding-top: 10px;
+  width: 500px
+}
+
+.SetTimeInputMinutes{
+  text-align:center;
+  width: 45px;
+  padding: 5px;
+}
+
+.SetTimeInputSeconds{
+  text-align:center;
+  width:45px;
+  padding: 5px;
+}
+
+Button{
+  padding: 3px;
+}
